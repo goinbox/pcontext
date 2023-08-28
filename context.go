@@ -4,13 +4,34 @@ import (
 	"context"
 
 	"github.com/goinbox/golog"
-
-	"go.opentelemetry.io/otel/trace"
 )
 
 type Context interface {
 	context.Context
 
+	TraceID() string
 	Logger() golog.Logger
-	BeginTrace(spanName string, opts ...trace.SpanStartOption) (Context, trace.Span)
+}
+
+type simpleContext struct {
+	context.Context
+
+	tid    string
+	logger golog.Logger
+}
+
+func NewSimpleContext(tid string, logger golog.Logger) Context {
+	return &simpleContext{
+		Context: context.Background(),
+		tid:     tid,
+		logger:  logger,
+	}
+}
+
+func (s *simpleContext) TraceID() string {
+	return s.tid
+}
+
+func (s *simpleContext) Logger() golog.Logger {
+	return s.logger
 }
