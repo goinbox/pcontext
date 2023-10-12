@@ -18,9 +18,12 @@ type simpleContext struct {
 	logger golog.Logger
 }
 
-func NewSimpleContext(logger golog.Logger) Context {
+func NewSimpleContext(ctx context.Context, logger golog.Logger) Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	return &simpleContext{
-		Context: context.Background(),
+		Context: ctx,
 		logger:  logger,
 	}
 }
